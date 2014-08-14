@@ -1,15 +1,15 @@
 <?php 
-    function plotAll()
+    function plotAll($name)
     {        
         $sql = "SELECT * FROM gpslocations";
-        $sql .= "WHERE phoneNumber=:name;";
+        $sql .= " WHERE phoneNumber=\"". $name ."\";";
         return $sql;
     }
 
-    function plotLast()
+    function plotLast($name)
     {
-        $sql = "SELECT * FROM gpslocations WHERE phoneNumber=:name";
-        $sql .= " ORDER BY LastUpdate desc";
+        $sql = "SELECT * FROM gpslocations WHERE phoneNumber=\"". $name ."\"";
+        $sql .= " ORDER BY LastUpdate desc ";
         $sql .= "LIMIT 1;";
         return $sql;
     }

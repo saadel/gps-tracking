@@ -15,8 +15,7 @@
     $bdd = new PDO('mysql:host=localhost;dbname=' . DB_NAME . ';charset=gbk', DB_USER, DB_PASS);  
 
     // Select all the rows in the markers table
-    // $name = "younes";
-    $sql = plotAll();
+    $sql = plotAll("test");
     $result = $bdd->query($sql);
 
     header("Content-type: text/xml");
