@@ -1,5 +1,5 @@
 <?php 
-    require 'dbinfo.php';
+    require 'classes/database.php';
     require 'includes/functions.php';
 
     function parseToXML($htmlStr)
@@ -12,7 +12,6 @@
         return $xmlStr;
     }     
 
-    $bdd = new PDO('mysql:host=localhost;dbname=' . DB_NAME . ';charset=gbk', DB_USER, DB_PASS);  
 
     // Select all the rows in the markers table
     $sql = plotAll("test");
