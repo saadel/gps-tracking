@@ -1,30 +1,31 @@
 <?php
-    require_once(__DIR__."dbinfo.php");
+    require_once(__DIR__."/../dbinfo.php");
 
-    class Ouvrier
+    class Employe
     {
 
-        private static $_table = "ouvrier";
-        private $ouvrier;
+        private static $_table = "employe";
+        private $employe;
 
         public function __construct()
         {
-            $this->ouvrier = array(
-                "o_id"=>null,
-                "o_nom"=>null,
-                "o_prenom"=>null,
-                "s_id"=>null
+            $this->employe = array(
+                "emp_id"=>null,
+                "emp_nom"=>null,
+                "emp_prenom"=>null,
+                "emp_surnom"=>null,
+                "soc_id"=>null
             );
         }
 
-        public function get_ouvrier()
+        public function get_employe()
         {
-            return $this->ouvrier;
+            return $this->employe;
         }
 
-        public function set_ouvrier($key, $value)
+        public function set_employe($key, $value)
         {
-            $this->ouvrier[$key] = $value;
+            $this->employe[$key] = $value;
         }
 
         public function find_by_id($id)
@@ -32,7 +33,7 @@
             global $db;
 
             $sql = "SELECT * FROM " . self::$_table;
-            $sql .= " WHERE o_id=:id"; 
+            $sql .= " WHERE emp_id=:id"; 
             $sql .= " LIMIT 1;";
 
             $re = $db->query($sql, array("id"=>$id));
@@ -40,11 +41,11 @@
 
             if(empty($resultat))
             {
-                $this->ouvrier = array();
+                $this->employe = array();
             }
             else
             {
-                $this->ouvrier = $resultat;
+                $this->employe = $resultat;
             }   
         }
 
@@ -65,10 +66,10 @@
             global $db;
 
             $sql = "INSERT INTO " . self::$_table;
-            $sql .= " (" . implode(",",array_keys($this->ouvrier)) . ")";
-            $sql .= " values(:".implode(", :",array_keys($this->ouvrier)) . ");";
+            $sql .= " (" . implode(",",array_keys($this->employe)) . ")";
+            $sql .= " values(:".implode(", :",array_keys($this->employe)) . ");";
             
-            $re = $db->query($sql, $this->ouvrier);
+            $re = $db->query($sql, $this->employe);
 
             if($db->affected_rows($re) > 0)
             {
@@ -85,8 +86,8 @@
         {
             global $db;
             $sql = "DELETE FROM " . self::$_table;
-            $sql .= " WHERE o_id=:o_id;";           
-            $re = $db->query($sql, array("o_id"=>$this->ouvrier["o_id"]));
+            $sql .= " WHERE emp_id=:emp_id;";           
+            $re = $db->query($sql, array("emp_id"=>$this->employe["emp_id"]));
             if($db->affected_rows($re) > 0)
             {
                 return true;
@@ -101,7 +102,7 @@
         {
             global $db;
 
-            $shifted = $this->ouvrier;
+            $shifted = $this->employe;
             array_shift($shifted);
             $array_key_key = array();
 
@@ -112,9 +113,9 @@
             
             $sql = "UPDATE " . self::$_table;
             $sql .= " SET ". implode(",", $array_key_key);
-            $sql .= " WHERE o_id=:o_id;";
+            $sql .= " WHERE emp_id=:emp_id;";
             
-            $re = $db->query($sql, $this->ouvrier);
+            $re = $db->query($sql, $this->employe);
 
             if($db->affected_rows($re) > 0)
             {
@@ -126,13 +127,13 @@
             }
         }
     
-        public function attache($s_id)
+        public function attache($soc_id)
         {
             global $db;
             $sql="insert 
-                into ouvrier
-                values(:s_id,:o_id) ";
-                $re=$db->query($sql,array("s_id"=>$s_id,"o_id"=>$this->ouvrier["o_id"]));
+                into employe
+                values(:soc_id,:emp_id) ";
+                $re=$db->query($sql,array("soc_id"=>$soc_id,"emp_id"=>$this->employe["emp_id"]));
                 if($db->affected_rows($re)>0)
                 {
                     return true;
@@ -143,7 +144,7 @@
                 }   
         }
 
-        public static function ouvriers()
+        public static function employes()
         {
             global $db;
 
@@ -157,18 +158,18 @@
             return $list;
         }
 
-        public static function liste_ouvriers_societe($s_id,$offset=0,$limit=10)
+        public static function liste_employes_societe($soc_id,$offset=0,$limit=10)
         {
         
             global $db;
             $sql="select 
-                  o_id, o_nom, o_prenom
-                  from ouvrier
-                  where s_id=:s_id
+                  emp_id, emp_nom, emp_prenom, emp_surnom
+                  from employe
+                  where soc_id=:soc_id
                   limit  ".$offset.",".$limit.";";  
            
             $list=array();
-            $re=$db->query($sql,array("s_id"=>$s_id));
+            $re=$db->query($sql,array("soc_id"=>$soc_id));
             $list=$re->fetchAll(PDO::FETCH_ASSOC);
             return $list;
         

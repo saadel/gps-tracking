@@ -1,6 +1,6 @@
 <?php
 
-    require_once(__DIR__."dbinfo.php");
+    require_once(__DIR__."/../dbinfo.php");
 
     class societe
     {
@@ -11,9 +11,8 @@
         public function __construct()
         {
             $this->societe = array(
-                "s_id"=>null,
-                "s_nom"=>null,
-                "s_prenom"=>null
+                "soc_id"=>null,
+                "soc_nom"=>null
             );
         }
         
@@ -32,7 +31,7 @@
             global $db;
 
             $sql = "SELECT * FROM " . self::$_table;
-            $sql .= " WHERE s_id=:id"; 
+            $sql .= " WHERE soc_id=:id"; 
             $sql .= " LIMIT 1;";
 
             $re = $db->query($sql, array("id"=>$id));
@@ -97,7 +96,7 @@
             
             $sql = "UPDATE " . self::$_table;
             $sql .= " SET ". implode(",", $array_key_key);
-            $sql .= " WHERE s_id=:s_id;";
+            $sql .= " WHERE soc_id=:soc_id;";
             
             $re = $db->query($sql, $this->societe);
 
@@ -115,8 +114,8 @@
         {
             global $db;
             $sql = "DELETE FROM " . self::$_table;
-            $sql .= " WHERE s_id=:s_id;";           
-            $re = $db->query($sql, array("s_id"=>$this->societe["s_id"]));
+            $sql .= " WHERE soc_id=:soc_id;";           
+            $re = $db->query($sql, array("soc_id"=>$this->societe["soc_id"]));
             if($db->affected_rows($re) > 0)
             {
                 return true;
