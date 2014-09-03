@@ -2240,4 +2240,9 @@ label {
     min-height: 900px;
 }
 
+.td-actions { 
+    width: 150px; 
+    
+    text-align: center; 
+}
 
