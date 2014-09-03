@@ -1,5 +1,5 @@
 <?php
-require(__DIR__."dbinfo.php");
+require(__DIR__."/../dbinfo.php");
 
 class Database{
 
