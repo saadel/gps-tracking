@@ -1,31 +1,21 @@
 <?php 
-    function plotAll($name)
-    {        
+    function plotAll($array)
+    {
+        global $db;        
         $sql = "SELECT * FROM gpslocations";
-        $sql .= " WHERE phoneNumber=\"". $name ."\";";
-        return $sql;
+        $sql .= " WHERE phoneNumber IN( '".$array."')";
+        $sql .= " ORDER BY phoneNumber;";
+        $result = $db->query($sql);
+        return $result;
     }
 
-    function plotLast($name)
+    function plotLast($array)
     {
-        $sql = "SELECT * FROM gpslocations WHERE phoneNumber=\"". $name ."\"";
-        $sql .= " ORDER BY LastUpdate desc ";
-        $sql .= "LIMIT 1;";
-        return $sql;
-    }
-
-
-
-
-    function plotLastEmployes()
-    {
-        $sql = "SELECT * FROM gpslocations AS gl1
-                WHERE
-                    (SELECT COUNT(*) 
-                        FROM gpslocations AS gl2 
-            WHERE gl2.phoneNumber = gl1.phoneNumber AND gl2.GPSLocationID > gl1.GPSLocationID
-        ) = 0;";
-        return $sql;
+        global $db;
+        $sql = "SELECT Latitude,Longitude,phoneNumber,MAX(LastUpdate) FROM gpslocations WHERE phoneNumber IN( '".$array."')";
+        $sql .= " GROUP BY phoneNumber ";
+        $result = $db->query($sql);
+        return $result;
     }
     
     function escape($var)
@@ -35,11 +25,9 @@
 
     function generateBG($x) {
         $colors = ["blue","green","red","purple","yellow","white"];
+        while ($x > 5) {
+            $x -= 5;
+        }
         return $colors[$x];
     }
-
-    // function plotEveryone($name)
-    // {
-    //     # code...
-    // }
 ?>
