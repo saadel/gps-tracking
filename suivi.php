@@ -1,6 +1,10 @@
 <?php
-    
-    require 'dbinfo.php';
+    require_once('classes/session.php');
+    require_once('classes/database.php');
+    require_once('classes/utilisateur.php');
+    require_once('classes/societe.php');
+    require_once('classes/employe.php');
+    require_once('dbinfo.php');
     require 'includes/functions.php';
     require __DIR__.'/vendor/autoload.php';
 
@@ -14,56 +18,75 @@
     use Ivory\GoogleMap\Overlays\InfoWindow;
     use Ivory\GoogleMap\Events\MouseEvent;
 
+    $session = new Session();
+
+    if(!$session->is_loggedin()) {
+        $session->message("vous devez s'authentifier");
+        header('Location: index.php');
+    }
+    $ut= new Utilisateur();
+    $ut->find_by_id($session->get_user_id());
+    $ut_data= $ut->get_utilisateur();
+    $employes=Employe::liste_employes_societe($ut_data['soc_id']);
+    $comp = new Societe();
+    $comp->find_by_id($ut_data['soc_id']);
+    $comp_data = $comp->get_societe();
+
+
     $map = new Map();
 
-    $map->setPrefixJavascriptVariable('map_');
-    $map->setHtmlContainerId('map_canvas');
-
-    $map->setAsync(false);
-    $map->setAutoZoom(false);
-
-    $map->setCenter(0, 0, true);
-    $map->setMapOption('zoom', 3);
-
-    $map->setBound(-2.1, -3.9, 2.6, 1.4, true, true);
-
-    $map->setMapOption('mapTypeId', MapTypeId::ROADMAP);
-    $map->setMapOption('mapTypeId', 'roadmap');
-
+    $map->setMapOption('zoom', 20);
     $map->setStylesheetOption('width', '700px');
     $map->setStylesheetOption('height', '500px');
 
-    $bdd = new PDO('mysql:host=localhost;dbname=' . DB_NAME . ';charset=gbk', DB_USER, DB_PASS);  
-    $sql = plotLast("test");
-    $result = $bdd->query($sql);
-    $data = $result->fetch();
-    $lat = $data['Latitude'];
-    $lon = $data['Longitude'];
+    if (isset($_POST['who'])) {
+        $array = implode("','", $_POST['who']);
+    } else {
+            $i=0;
+            foreach ($employes as $employe) {
+                $surnoms[$i] = $employe['emp_surnom'];
+                $i++;
+            }
+            $array = implode("','", $surnoms);
+    }
 
-    $marker = new Marker();
+    $result = plotLast($array);
+    $i=0;
+    while($data = $result->fetch()) {
+        $lat[$i] = $data['Latitude'];
+        $lon[$i] = $data['Longitude'];
+        $phone[$i] = $data['phoneNumber'];
+        $last[$i] = $data['MAX(LastUpdate)'];
+        $i++;
+    }
+    $map->setCenter($lat[count($lat)-1], $lon[count($lat)-1], true);
+    
+    for ($i=0; $i < count($lat); $i++) { 
+        $marker = new Marker();
 
-    $marker->setPrefixJavascriptVariable('marker_');
-    $marker->setPosition(35.7545, -5.8418, true);
-    $marker->setAnimation(Animation::DROP);
+        $marker->setPrefixJavascriptVariable('marker_');
+        $marker->setPosition($lat[$i], $lon[$i], true);
+        $marker->setAnimation(Animation::DROP);
 
-    $marker->setIcon('http://maps.gstatic.com/mapfiles/markers/marker.png');
+        // $marker->setIcon('http://maps.gstatic.com/mapfiles/markers/marker.png');
+        $marker->setIcon('http://labs.google.com/ridefinder/images/mm_20_' . generateBG($i) . '.png');
 
-    $map->addMarker($marker);
+        $map->addMarker($marker);
 
-    $infoWindow = new InfoWindow();
+        $infoWindow = new InfoWindow();
 
-    $infoWindow->setPrefixJavascriptVariable('info_window_');
-    $infoWindow->setPixelOffset(1.1, 2.1, 'px', 'pt');
-    $infoWindow->setContent('<p><b>' . $data['phoneNumber'] . '</b><br>' . $data['LastUpdate'].'</p>');
-    $infoWindow->setOpen(true);
-    $infoWindow->setAutoOpen(true);
-    $infoWindow->setOpenEvent(MouseEvent::CLICK);
-    $infoWindow->setAutoClose(false);
-    $infoWindow->setOption('disableAutoPan', true);
-    $infoWindow->setOption('zIndex', 10);
+        $infoWindow->setPrefixJavascriptVariable('info_window_');
+        $infoWindow->setPixelOffset(1.1, 2.1, 'px', 'px');
+        $infoWindow->setContent('<div style="width:150px; height:50px"><b>' . ucwords($phone[$i]) . '</b><br>' . $last[$i].'</div>');
+        $infoWindow->setOpen(true);
+        $infoWindow->setAutoOpen(true);
+        $infoWindow->setOpenEvent(MouseEvent::CLICK);
+        $infoWindow->setAutoClose(false);
+        $infoWindow->setOption('disableAutoPan', true);
+        $infoWindow->setOption('zIndex', 10);
 
-    $marker->setInfoWindow($infoWindow);
-    $mapHelper = new MapHelper();
+        $marker->setInfoWindow($infoWindow);
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -108,7 +131,7 @@
             <!--logo end-->
             <div class="top-menu">
             	<ul class="nav pull-right top-menu">
-                    <li><a class="logout" href="login.html">Logout</a></li>
+                    <li><a class="logout" href="process/logout.php">Logout</a></li>
             	</ul>
             </div>
         </header>
@@ -124,7 +147,7 @@
               <ul class="sidebar-menu" id="nav-accordion">
               
               	  <p class="centered"><a href="profile.html"><img src="assets/img/ui-sam.jpg" class="img-circle" width="60"></a></p>
-              	  <h5 class="centered">Nom de la société</h5>
+              	  <h5 class="centered"><?php echo escape($comp_data["soc_nom"]); ?></h5>
               	  	                
                   <li class="mt">
                       <a class="active" href="javascript:;" >
@@ -132,11 +155,14 @@
                           <span>Suivi</span>
                       </a>
                       <ul class="sub">
-                      <form>
-                          <br>
-                          &nbsp;&nbsp;&nbsp;<input type="radio" name="who" value="who1"> Employe1<br>
-                          &nbsp;&nbsp;&nbsp;<input type="radio" name="who" value="who2"> Employe2<br>
-                          &nbsp;&nbsp;&nbsp;<input type="radio" name="who" value="who2"> Employe3
+                      <form method="post">
+                      <?php 
+                          foreach ($employes as $employe): 
+                          $id = $employe["emp_id"]; ?>
+                          <br>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="who[]" value="<?php echo escape($employe["emp_surnom"]); ?>" <?php if(isset($_POST['who']) && is_array($_POST['who']) && in_array($employe["emp_surnom"], $_POST['who'])) echo 'checked="checked"' ?> > <?php echo escape($employe["emp_prenom"] ." ". $employe['emp_nom']); ?>
+                      <?php endforeach ?>
+                      <br><br>&nbsp;&nbsp;&nbsp;<input class="btn btn-succes btn-xs" type="submit" value="Go">
+                      &nbsp;&nbsp;&nbsp;<input class="btn btn-succes btn-xs" type="reset" value="Reset">
                       </form>
                       </ul>
                   </li>
@@ -170,7 +196,10 @@
           	<h3><i class="fa fa-angle-right"></i> Suivi</h3>
           	<div class="row mt">
           		<div class="col-lg-12">
-                    <?php echo $mapHelper->render($map); ?>
+                    <?php 
+                        $mapHelper = new MapHelper();
+                        echo $mapHelper->render($map); 
+                    ?>
           		</div>
           	</div>
 			
