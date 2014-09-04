@@ -47,6 +47,13 @@ a, a:hover, a:focus {
 	background: #68dff0;
 }
 
+.modal-header2 {
+    min-height: 16.42857143px;
+    padding: 15px;
+    border-bottom: 1px solid #e5e5e5;
+    background: #ff6c60;
+}
+
 .modal-title {
 	color: white;
 }
@@ -2241,7 +2248,7 @@ label {
 }
 
 .td-actions { 
-    width: 150px; 
+    width: 200px; 
     
     text-align: center; 
 }
