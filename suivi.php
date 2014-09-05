@@ -35,6 +35,7 @@
 
     $map = new Map();
 
+    $map->setAsync(true);
     $map->setMapOption('zoom', 20);
     $map->setStylesheetOption('width', '700px');
     $map->setStylesheetOption('height', '500px');
