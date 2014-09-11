@@ -5,7 +5,6 @@
     require_once('classes/employe.php');
     require_once('dbinfo.php');
     require 'includes/functions.php';
-    require __DIR__.'/vendor/autoload.php';
 
     require_once("simpleGMapAPI.php");
     require_once("simpleGMapGeocoder.php");
