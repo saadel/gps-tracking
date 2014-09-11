@@ -8,7 +8,6 @@
     require 'includes/functions.php';
 
     require_once("simpleGMapAPI.php");
-    require_once("simpleGMapGeocoder.php");
 
     $session = new Session();
 
@@ -27,7 +26,7 @@
 
     $map = new simpleGMapAPI();
 
-    $map->setWidth(700);
+    $map->setWidth(1000);
     $map->setHeight(500);
     $map->setBackgroundColor('#d0d0d0');
     $map->setMapDraggable(true);
@@ -40,10 +39,8 @@
     $map->showScaleControl(true);
     $map->showStreetViewControl(true);
 
-    $map->setZoomLevel(14);
-    $map->setInfoWindowBehaviour('SINGLE_CLOSE_ON_MAPCLICK');
+    $map->setInfoWindowBehaviour('MULTIPLE');
     $map->setInfoWindowTrigger('CLICK');
-
 
     if (isset($_POST['who'])) {
         $array = implode("','", $_POST['who']);
@@ -129,7 +126,7 @@
               <!-- sidebar menu start-->
               <ul class="sidebar-menu" id="nav-accordion">
 
-                  <p class="centered"><a href="profile.html"><img src="assets/img/ui-sam.jpg" class="img-circle" width="60"></a></p>
+                  <p class="centered"><a href="profile.html"><img src="assets/img/ny.jpg" class="img-circle" width="60"></a></p>
                   <h5 class="centered"><?php echo escape($comp_data["soc_nom"]); ?></h5>
 
                   <li class="mt">
@@ -181,7 +178,7 @@
                 <div class="col-lg-12">
                     <?php
                         $map->printGMapsJS();
-                        $map->showMap(true);
+                        $map->showMap(true, true);
                     ?>
                 </div>
             </div>

@@ -19,7 +19,7 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *
 *
 * simpleGMapAPI
@@ -99,7 +99,7 @@ private $mapType = 'ROADMAP';
 * int : 0 - 19
 * set's the initial zoom level of the map (0 is fully zoomed out and 19 is fully zoomed in)
 */
-private $zoomLevel = 6;
+private $zoomLevel = 10;
 
 /**
 * showDefaultUI
@@ -173,7 +173,7 @@ private $infoWindowTrigger = 'CLICK';
 
 /**
  * maximum longitude of all markers
- * 
+ *
  * @var float
  */
 private $maxLng = -1000000;
@@ -307,7 +307,7 @@ function setMapType($mapType)
             break;
         default :
             $this->mapType = 'ROADMAP';
-            break;        
+            break;
     }
 }
 
@@ -340,7 +340,7 @@ function setInfoWindowBehaviour($infoWindowBehaviour)
             break;
         default :
             $this->infoWindowBehaviour = 'MULTIPLE'; // default behaviour of Google Maps V3
-            break;        
+            break;
     }
 }
 
@@ -354,12 +354,13 @@ function setInfoWindowTrigger($infoWindowTrigger)
 {
     switch ($infoWindowTrigger)
     {
+
         case 'MOUSEOVER' :
             $this->infoWindowTrigger = $infoWindowTrigger;
             break;
         default :
             $this->infoWindowTrigger = 'CLICK';
-            break;        
+            break;
     }
 }
 
@@ -367,7 +368,7 @@ function setInfoWindowTrigger($infoWindowTrigger)
 * @function     showDefaultUI
 * @param        $control : boolean
 * @returns      nothing
-* @description  Tells the v3 API wether to show the default UI (its behaviour) or not 
+* @description  Tells the v3 API wether to show the default UI (its behaviour) or not
 */
 function showDefaultUI($control = true)
 {
@@ -384,7 +385,7 @@ function showDefaultUI($control = true)
 function showMapTypeControl($control = true, $style )
 {
     $this->showMapTypeControl = $control;
-    
+
     switch ( $style )
     {
         case 'HORIZONTAL_BAR' :
@@ -393,7 +394,7 @@ function showMapTypeControl($control = true, $style )
             break;
         default :
             $this->mapTypeControlStyle = 'DEFAULT';
-            break;    
+            break;
     }
 }
 
@@ -416,7 +417,7 @@ function showNavigationControl($control = true, $style)
             break;
         default :
             $this->navigationTypeControlStyle = 'DEFAULT';
-            break;    
+            break;
     }
 }
 
@@ -473,14 +474,14 @@ function setDoubleclickZoom($dczoom = true)
 function printGMapsJS()
 {
     $this->apiSensor ? $_sensor = "true" : $_sensor = "false";
-    
+
     echo "\n<!-- Include Google Maps JS -->";
     echo "\n<script src=\"http://maps.google.com/maps/api/js?sensor=$_sensor\" type=\"text/javascript\"></script>\n";
 }
 
 /**
  * @function     adjustCenterCoords
- * 
+ *
  * @param        $lng the map longitude : string
  * @param        $lat the map latitude  : string
  * @description  adjust map center coordinates by the given lat/lon point
@@ -493,7 +494,7 @@ private function adjustCenterCoords($lat, $lng)
         $this->minLat = (float) min($lat, $this->minLat);
         $this->maxLng = (float) max($lng, $this->maxLng);
         $this->minLng = (float) min($lng, $this->minLng);
-    
+
         $this->centerLng = (float) ($this->minLng + $this->maxLng) / 2;
         $this->centerLat = (float) ($this->minLat + $this->maxLat) / 2;
     }
@@ -519,7 +520,7 @@ function addMarker($lat, $lng, $tooltip="", $info="", $iconURL="", $clickable=tr
     $this->mapMarkers[$count]['info']    = $info;
     $this->mapMarkers[$count]['iconURL'] = $iconURL;
     $this->mapMarkers[$count]['clickable'] = $clickable;
-    
+
     $this->adjustCenterCoords($lat, $lng);
 }
 
@@ -538,14 +539,14 @@ function addMarkerByAddress($address, $tooltip="", $info="", $iconURL="", $click
 {
     $geoCoder = new simpleGMapGeocoder();
     $result = array();
-    
+
     if (!is_string($address))
     {
 	die("All Addresses must be passed as a string");
     }
-    
+
     $result = $geoCoder->getGeoCoords($address);
-    
+
     if ( $result['status'] == "OK" )
     {
         $count = count($this->mapMarkers);
@@ -554,7 +555,7 @@ function addMarkerByAddress($address, $tooltip="", $info="", $iconURL="", $click
         $this->mapMarkers[$count]['tooltip'] = $tooltip;
         $this->mapMarkers[$count]['info']    = $info;
         $this->mapMarkers[$count]['iconURL'] = $iconURL;
-        $this->mapMarkers[$count]['clickable'] = $clickable;        
+        $this->mapMarkers[$count]['clickable'] = $clickable;
 
         $this->adjustCenterCoords($result['lat'], $result['lng']);
     }
@@ -576,7 +577,7 @@ function addCircle($lat, $lng, $rad, $info="", $options=array())
     $this->mapCircles[$count]['lng']  = $lng;
     $this->mapCircles[$count]['rad']  = $rad;
     $this->mapCircles[$count]['info'] = $info;
-    
+
     /* set options */
     if ( sizeof($options) != 0 )
     {
@@ -585,7 +586,7 @@ function addCircle($lat, $lng, $rad, $info="", $options=array())
         $this->mapCircles[$count]['strokeColor']   = $options['strokeColor'];
         $this->mapCircles[$count]['strokeOpacity'] = $options['strokeOpacity'];
         $this->mapCircles[$count]['strokeWeight']  = $options['strokeWeight'];
-        
+
         if ( $options['clickable'] == "" OR $options['clickable'] == false )
         {
             $this->mapCircles[$count]['clickable'] = false;
@@ -616,7 +617,7 @@ function addRectangle($lat1, $lng1, $lat2, $lng2, $info="", $options=array())
     $this->mapRectangles[$count]['lat2'] = $lat2;
     $this->mapRectangles[$count]['lng2'] = $lng2;
     $this->mapRectangles[$count]['info'] = $info;
-    
+
     /* set options */
     if ( sizeof($options) != 0 )
     {
@@ -625,7 +626,7 @@ function addRectangle($lat1, $lng1, $lat2, $lng2, $info="", $options=array())
         $this->mapRectangles[$count]['strokeColor']   = $options['strokeColor'];
         $this->mapRectangles[$count]['strokeOpacity'] = $options['strokeOpacity'];
         $this->mapRectangles[$count]['strokeWeight']  = $options['strokeWeight'];
-        
+
         if ( $options['clickable'] == "" OR $options['clickable'] == false )
         {
             $this->mapRectangles[$count]['clickable'] = false;
@@ -636,7 +637,7 @@ function addRectangle($lat1, $lng1, $lat2, $lng2, $info="", $options=array())
         }
     }
     $this->adjustCenterCoords($lat1, $lng1);
-    $this->adjustCenterCoords($lat2, $lng2);    
+    $this->adjustCenterCoords($lat2, $lng2);
 }
 
 /**
@@ -655,13 +656,13 @@ function calculateDistance($lat1, $lng1, $lat2, $lng2, $unit="km")
     $lat2 = (float)$lat2;
     $lng1 = (float)$lng1;
     $lng2 = (float)$lng2;
-    
-    
+
+
     // calculation of distance in km using Great Circle Distance Formula
     $dist = $radius *
             acos( sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +
                   cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($lng2) - deg2rad($lng1)) );
-    
+
     switch ( strtolower($unit) )
     {
         case 'm' :     // miles
@@ -674,7 +675,7 @@ function calculateDistance($lat1, $lng1, $lat2, $lng2, $unit="km")
             $dist = $dist * 39370;
             break;
     }
-    
+
     return $dist;
 }
 
@@ -682,7 +683,7 @@ function calculateDistance($lat1, $lng1, $lat2, $lng2, $unit="km")
 * @function     showMap
 * @description  Displays the Google Map on the page
 */
-function showMap($zoomToBounds = true)
+function showMap($zoomToBounds = true, $autoopen = false)
 {
     $this->showDefaultUI ? $_disableDefaultUI = "false" : $_disableDefaultUI = "true";
     $this->showMapTypeControl ? $_mapTypeControl = "true" : $_mapTypeControl = "false";
@@ -693,13 +694,13 @@ function showMap($zoomToBounds = true)
     $this->enableScrollwheelZoom ? $_scrollwheelZoom = "true" : $_scrollwheelZoom = "false";
     $this->enableDoubleClickZoom ? $_disableDoubleClickZoom = "false" : $_disableDoubleClickZoom = "true";
 
-    // just set the infoWindowTrigger to lower case so we can use it direct as a string 
+    // just set the infoWindowTrigger to lower case so we can use it direct as a string
     $_infowindowtrigger = strtolower($this->infoWindowTrigger);
-    
+
     // create div for the map canvas
     echo "\n<!-- DIV container for the map -->";
     echo "\n<div id=\"gmap_canvas\" style=\"width: ".$this->mapWidth."px; height: ".$this->mapHeight."px;\">\n</div>\n";
-        
+
     // create JS to display the map
     echo "\n<!-- Display the Google Map -->";
     echo "\n<script type=\"text/javascript\">\n".
@@ -724,8 +725,8 @@ function showMap($zoomToBounds = true)
          "};\n\n".
          "function showmap() {\n".
          "\tvar map = new google.maps.Map(document.getElementById('gmap_canvas'), options);\n\n";
-    
-    // infoWindowBehaviour     
+
+    // infoWindowBehaviour
     if ( ($this->infoWindowBehaviour == 'CLOSE_ON_MAPCLICK') OR ($this->infoWindowBehaviour == 'SINGLE_CLOSE_ON_MAPCLICK') )
     {
         echo "\tgoogle.maps.event.addListener(map, 'click', function() { if (currentInfoWindow != null) { currentInfoWindow.close(); } });\n";
@@ -751,18 +752,18 @@ function showMap($zoomToBounds = true)
         }
         echo "\t map: map\n".
              "\t});\n";
-             
+
         // add an InfoWindow if there is a text to be displayed
         if ( $this->mapMarkers[$count]['info'] != "")
         {
             // create InfoWindow
             echo "\tvar infowindowM$count = new google.maps.InfoWindow({\n".
                  "\t content: '".$this->mapMarkers[$count]['info']."'\n".
-                 
+
                  "\t});\n";
             // add an event to the marker
             echo "\tgoogle.maps.event.addListener (marker$count, '$_infowindowtrigger', function() {\n";
-            // infoWindowBehaviour     
+            // infoWindowBehaviour
             if ( ($this->infoWindowBehaviour == 'SINGLE') OR ($this->infoWindowBehaviour == 'SINGLE_CLOSE_ON_MAPCLICK') )
             {
                 echo "\t if (currentInfoWindow != null) { currentInfoWindow.close(); } \n";
@@ -771,6 +772,7 @@ function showMap($zoomToBounds = true)
                  "\t currentInfoWindow = infowindowM$count;\n".
                  "\t});\n";
         }
+        if($autoopen) { echo "\tinfowindowM$count.open(map, marker$count);\n"; }
         echo "\tbounds.extend(markerLatLng);\n\n";
     }
 
@@ -784,7 +786,7 @@ function showMap($zoomToBounds = true)
              "\tvar circle$count = new google.maps.Circle({\n".
              "\t center: circleLatLng,\n".
              "\t radius: ".$this->mapCircles[$count]['rad'].",\n";
-        // check if there are options set for the circle     
+        // check if there are options set for the circle
         if ( $this->mapCircles[$count]['fillColor'] != "" )     { echo "\t fillColor: '".$this->mapCircles[$count]['fillColor']."',\n"; }
         if ( $this->mapCircles[$count]['fillOpacity'] != "" )   { echo "\t fillOpacity: ".$this->mapCircles[$count]['fillOpacity'].",\n"; }
         if ( $this->mapCircles[$count]['strokeColor'] != "" )   { echo "\t strokeColor: '".$this->mapCircles[$count]['strokeColor']."',\n"; }
@@ -793,7 +795,7 @@ function showMap($zoomToBounds = true)
         if ( $this->mapCircles[$count]['clickable'] == false )  { echo "\t clickable: false,\n"; }
         echo "\t map: map\n".
              "\t});\n";
-             
+
         // add an InfoWindow if there is a text to be displayed and circle is clickable
         if ( ($this->mapCircles[$count]['info'] != "") AND ($this->mapCircles[$count]['clickable'] != false) )
         {
@@ -804,7 +806,7 @@ function showMap($zoomToBounds = true)
                  "\t});\n";
             // add an event to the marker
             echo "\tgoogle.maps.event.addListener (circle$count, '$_infowindowtrigger', function() {\n";
-            // infoWindowBehaviour     
+            // infoWindowBehaviour
             if ( ($this->infoWindowBehaviour == 'SINGLE') OR ($this->infoWindowBehaviour == 'SINGLE_CLOSE_ON_MAPCLICK') )
             {
                 echo "\t if (currentInfoWindow != null) { currentInfoWindow.close(); } \n";
@@ -833,7 +835,7 @@ function showMap($zoomToBounds = true)
              "\tvar rectangleBounds = new google.maps.LatLngBounds(rectangleSW,rectangleNE);\n".
              "\tvar rectangle$count = new google.maps.Rectangle({\n".
              "\t bounds: rectangleBounds,\n";
-        // check if there are options set for the rectangle     
+        // check if there are options set for the rectangle
         if ( $this->mapRectangles[$count]['fillColor'] != "" )     { echo "\t fillColor: '".$this->mapRectangles[$count]['fillColor']."',\n"; }
         if ( $this->mapRectangles[$count]['fillOpacity'] != "" )   { echo "\t fillOpacity: ".$this->mapRectangles[$count]['fillOpacity'].",\n"; }
         if ( $this->mapRectangles[$count]['strokeColor'] != "" )   { echo "\t strokeColor: '".$this->mapRectangles[$count]['strokeColor']."',\n"; }
@@ -842,7 +844,7 @@ function showMap($zoomToBounds = true)
         if ( $this->mapRectangles[$count]['clickable'] == false )  { echo "\t clickable: false,\n"; }
         echo "\t map: map\n".
              "\t});\n";
-             
+
         // add an InfoWindow if there is a text to be displayed and rectangle is clickable
         if ( ($this->mapRectangles[$count]['info'] != "") AND ($this->mapRectangles[$count]['clickable'] != false) )
         {
@@ -853,7 +855,7 @@ function showMap($zoomToBounds = true)
                  "\t});\n";
             // add an event to the marker
             echo "\tgoogle.maps.event.addListener (rectangle$count, '$_infowindowtrigger', function() {\n";
-            // infoWindowBehaviour     
+            // infoWindowBehaviour
             if ( ($this->infoWindowBehaviour == 'SINGLE') OR ($this->infoWindowBehaviour == 'SINGLE_CLOSE_ON_MAPCLICK') )
             {
                 echo "\t if (currentInfoWindow != null) { currentInfoWindow.close(); } \n";
