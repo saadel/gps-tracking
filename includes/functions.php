@@ -1,9 +1,20 @@
-<?php 
+<?php
     function plotAll($array)
     {
-        global $db;        
+        global $db;
         $sql = "SELECT * FROM gpslocations";
         $sql .= " WHERE phoneNumber IN( '".$array."')";
+        $sql .= " ORDER BY phoneNumber;";
+        $result = $db->query($sql);
+        return $result;
+    }
+
+    function plotAllFromTo($array, $from, $to)
+    {
+        global $db;
+        $sql = "SELECT * FROM gpslocations";
+        $sql .= " WHERE phoneNumber IN( '".$array."')";
+        $sql .= " AND LastUpdate BETWEEN '".$from."' AND '".$to."'";
         $sql .= " ORDER BY phoneNumber;";
         $result = $db->query($sql);
         return $result;
@@ -17,7 +28,7 @@
         $result = $db->query($sql);
         return $result;
     }
-    
+
     function escape($var)
     {
         return htmlEntities($var, ENT_QUOTES);

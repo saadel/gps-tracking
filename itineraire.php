@@ -38,9 +38,9 @@
     $map->showScaleControl(true);
     $map->showStreetViewControl(true);
 
-    $map->setZoomLevel(14);
-    $map->setInfoWindowBehaviour('SINGLE_CLOSE_ON_MAPCLICK');
+    $map->setInfoWindowBehaviour('MULTIPLE');
     $map->setInfoWindowTrigger('CLICK');
+
 
 
     if (isset($_POST['who'])) {
@@ -54,7 +54,16 @@
             $array = implode("','", $surnoms);
     }
 
-    if($result = plotAll($array)) {
+    if (isset($_POST['from']) && isset($_POST['from'])) {
+        $originalFrom = $_POST['from'];
+        $From = date("Y-m-d H:i:s", strtotime($originalFrom));
+        $originalTo = $_POST['to'];
+        $To = date("Y-m-d H:i:s", strtotime($originalTo));
+        $result = plotAllFromTo($array, $From, $To);
+    } else {
+        $result = plotAll($array);
+    }
+    if($result) {
         $i=0;
         while($data = $result->fetch()) {
             $lat[$i] = $data['Latitude'];
@@ -91,6 +100,8 @@
     <link href="assets/css/bootstrap.css" rel="stylesheet">
     <!--external css-->
     <link href="assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <!-- Jquery UI -->
+    <link href="assets/jquery-ui-1.11.1/jquery-ui.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="assets/css/style.css" rel="stylesheet">
@@ -157,6 +168,9 @@
                           $id = $employe["emp_id"]; ?>
                           <br>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="who[]" value="<?php echo escape($employe["emp_surnom"]); ?>" <?php if(isset($_POST['who']) && is_array($_POST['who']) && in_array($employe["emp_surnom"], $_POST['who'])) echo 'checked="checked"' ?> > <?php echo escape($employe["emp_prenom"] ." ". $employe['emp_nom']); ?>
                       <?php endforeach ?>
+
+                      <br><br>&nbsp;De : <input type="text" id="datepicker" name="from">
+                      <br><br>&nbsp;A : &nbsp;&nbsp;&nbsp;<input type="text" id="datepicker2" name="to">
                       <br><br>&nbsp;&nbsp;&nbsp;<input class="btn btn-succes btn-xs" type="submit" value="Go">
                       &nbsp;&nbsp;&nbsp;<input class="btn btn-succes btn-xs" type="reset" value="Reset">
                       </form>
@@ -224,8 +238,15 @@
     <!--script for this page-->
 
   <script>
-      //custom select box
+        //datepickers      
+        $(function() {
+            $( "#datepicker" ).datepicker();
+        });
 
+        $(function() {
+            $( "#datepicker2" ).datepicker();
+        });
+      //custom select box
       $(function(){
           $('select.styled').customSelect();
       });

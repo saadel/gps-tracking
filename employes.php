@@ -77,7 +77,7 @@
               <!-- sidebar menu start-->
               <ul class="sidebar-menu" id="nav-accordion">
               
-              	  <p class="centered"><a href="profile.html"><img src="assets/img/ui-danro.jpg" class="img-circle" width="60"></a></p>
+              	  <p class="centered"><a href="profile.html"><img src="assets/img/ny.jpg" class="img-circle" width="60"></a></p>
               	  <h5 class="centered"><?php echo escape($comp_data["soc_nom"]); ?></h5>
               	  	                
                   <li class="mt">
