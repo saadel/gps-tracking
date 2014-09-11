@@ -6,12 +6,12 @@ It displays the locations (both the last known gps location and an itinerary) of
 
 Suivi page : gives the last location
 
-![Suivi page](/assets/img/suivi.jpg)
+![Suivi page](/assets/img/suivi.JPG)
 
 Itineraire page : gives the itinerary
 
-![Itineraire page](/assets/img/itineraire.jpg)
+![Itineraire page](/assets/img/itineraire.JPG)
 
 Employes page : where you can manage the users (add, modify or delete)
 
-![Employes page](/assets/img/employes.jpg)
+![Employes page](/assets/img/employes.JPG)
