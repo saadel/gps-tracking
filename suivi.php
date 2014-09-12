@@ -55,6 +55,7 @@
 
     $result = plotLast($array);
     $i=0;
+    $lat[0]=0;
     while($data = $result->fetch()) {
         $lat[$i] = $data['Latitude'];
         $lon[$i] = $data['Longitude'];
@@ -62,10 +63,12 @@
         $last[$i] = $data['MAX(LastUpdate)'];
         $i++;
     }
-    for ($i=0; $i < count($lat); $i++) {
-        $map->addMarker($lat[$i], $lon[$i], $phone[$i],
-        '<div style="width:150px; height:50px"><b>' . ucwords($phone[$i]) . '</b><br>' . $last[$i].'</div>',
-        'http://labs.google.com/ridefinder/images/mm_20_' . generateBG($i) . '.png');
+    if ($lat[0]) {
+        for ($i=0; $i < count($lat); $i++) {
+            $map->addMarker($lat[$i], $lon[$i], $phone[$i],
+            '<div style="width:150px; height:50px"><b>' . ucwords($phone[$i]) . '</b><br>' . $last[$i].'</div>',
+            'http://labs.google.com/ridefinder/images/mm_20_' . generateBG($i) . '.png');
+        }
     }
 ?>
 <!DOCTYPE html>
@@ -139,7 +142,7 @@
                       <?php
                           foreach ($employes as $employe):
                           $id = $employe["emp_id"]; ?>
-                          <br>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="who[]" value="<?php echo escape($employe["emp_surnom"]); ?>" <?php if(isset($_POST['who']) && is_array($_POST['who']) && in_array($employe["emp_surnom"], $_POST['who'])) echo 'checked="checked"' ?> > <?php echo escape($employe["emp_prenom"] ." ". $employe['emp_nom']); ?>
+                          <br>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="who[]" value="<?php echo escape($employe["emp_surnom"]); ?>" <?php if(isset($_POST['who']) && is_array($_POST['who']) && in_array($employe["emp_surnom"], $_POST['who'])) echo 'checked="checked"' ?> > <?php echo ucwords(escape($employe["emp_prenom"] ." ". $employe['emp_nom'])); ?>
                       <?php endforeach ?>
                       <br><br>&nbsp;&nbsp;&nbsp;<input class="btn btn-succes btn-xs" type="submit" value="Go">
                       &nbsp;&nbsp;&nbsp;<input class="btn btn-succes btn-xs" type="reset" value="Reset">
@@ -175,6 +178,9 @@
           <section class="wrapper site-min-height">
             <h3><i class="fa fa-angle-right"></i> Suivi</h3>
             <div class="row mt">
+                <?php if (!$lat[0]) { ?>
+                    <h3>&nbsp;&nbsp;&nbsp;Pas de localisations, veuillez réessayer.</h3>
+                <?php } ?>
                 <div class="col-lg-12">
                     <?php
                         $map->printGMapsJS();

@@ -42,7 +42,6 @@
     $map->setInfoWindowTrigger('CLICK');
 
 
-
     if (isset($_POST['who'])) {
         $array = implode("','", $_POST['who']);
     } else {
@@ -53,8 +52,7 @@
             }
             $array = implode("','", $surnoms);
     }
-
-    if (isset($_POST['from']) && isset($_POST['from'])) {
+    if ($_POST['from'] && $_POST['to']) {
         $originalFrom = $_POST['from'];
         $From = date("Y-m-d H:i:s", strtotime($originalFrom));
         $originalTo = $_POST['to'];
@@ -65,6 +63,7 @@
     }
     if($result) {
         $i=0;
+        $lat[0]=0;
         while($data = $result->fetch()) {
             $lat[$i] = $data['Latitude'];
             $lon[$i] = $data['Longitude'];
@@ -72,17 +71,19 @@
             $last[$i] = $data['LastUpdate'];
             $i++;
         }
-        $j=0;
-        for ($i=0; $i < count($lat); $i++) {
-            if ($i) {
-                if ($phone[$i] != $phone[$i-1]) {
-                    $j++;
+        if ($lat[0]) {
+            $j=0;
+            for ($i=0; $i < count($lat); $i++) {
+                if ($i) {
+                    if ($phone[$i] != $phone[$i-1]) {
+                        $j++;
+                    }
                 }
+                $map->addMarker($lat[$i], $lon[$i], $phone[$i],
+                                '<div style="width:150px; height:50px"><b>' . ucwords($phone[$i]) . '</b><br>' . $last[$i].'</div>',
+                                'http://labs.google.com/ridefinder/images/mm_20_' . generateBG($j) . '.png');
             }
-            $map->addMarker($lat[$i], $lon[$i], $phone[$i],
-                            '<div style="width:150px; height:50px"><b>' . ucwords($phone[$i]) . '</b><br>' . $last[$i].'</div>',
-                            'http://labs.google.com/ridefinder/images/mm_20_' . generateBG($j) . '.png');
-        }
+        } 
     }
 ?>
 <!DOCTYPE html>
@@ -166,7 +167,7 @@
                       <?php
                           foreach ($employes as $employe):
                           $id = $employe["emp_id"]; ?>
-                          <br>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="who[]" value="<?php echo escape($employe["emp_surnom"]); ?>" <?php if(isset($_POST['who']) && is_array($_POST['who']) && in_array($employe["emp_surnom"], $_POST['who'])) echo 'checked="checked"' ?> > <?php echo escape($employe["emp_prenom"] ." ". $employe['emp_nom']); ?>
+                          <br>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="who[]" value="<?php echo escape($employe["emp_surnom"]); ?>" <?php if(isset($_POST['who']) && is_array($_POST['who']) && in_array($employe["emp_surnom"], $_POST['who'])) echo 'checked="checked"' ?> > <?php echo ucwords(escape($employe["emp_prenom"] ." ". $employe['emp_nom'])); ?>
                       <?php endforeach ?>
 
                       <br><br>&nbsp;De : <input type="text" id="datepicker" name="from">
@@ -198,12 +199,15 @@
           <section class="wrapper site-min-height">
           	<h3><i class="fa fa-angle-right"></i> Itinéraire</h3>
           	<div class="row mt">
+                <?php if (!$lat[0]) { ?>
+                    <h3>&nbsp;&nbsp;&nbsp;Pas de localisations, veuillez réessayer.</h3>
+                <?php } ?>
           		<div class="col-lg-12">
                     <?php
                         $map->printGMapsJS();
                         $map->showMap(true);
                     ?>
-          		</div>
+                </div>
           	</div>
 
 		</section><!--/wrapper -->
