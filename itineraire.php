@@ -7,7 +7,6 @@
     require 'includes/functions.php';
 
     require_once("simpleGMapAPI.php");
-    require_once("simpleGMapGeocoder.php");
 
     $session = new Session();
 
@@ -41,7 +40,6 @@
     $map->setInfoWindowBehaviour('MULTIPLE');
     $map->setInfoWindowTrigger('CLICK');
 
-
     if (isset($_POST['who'])) {
         $array = implode("','", $_POST['who']);
     } else {
@@ -52,11 +50,15 @@
             }
             $array = implode("','", $surnoms);
     }
+    
+    date_default_timezone_set('Africa/Casablanca');
+
     if ($_POST['from'] && $_POST['to']) {
         $originalFrom = $_POST['from'];
         $From = date("Y-m-d H:i:s", strtotime($originalFrom));
         $originalTo = $_POST['to'];
-        $To = date("Y-m-d H:i:s", strtotime($originalTo));
+        $dt = date("Y-m-d H:i:s", strtotime($originalTo));
+        $To = date("Y-m-d H:i:s", strtotime("$dt +1 day"));
         $result = plotAllFromTo($array, $From, $To);
     } else {
         $result = plotAll($array);
@@ -107,6 +109,10 @@
     <!-- Custom styles for this template -->
     <link href="assets/css/style.css" rel="stylesheet">
     <link href="assets/css/style-responsive.css" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/img/favicon.jpg" />
+    <!--[if IE]><link rel="shortcut icon" type="image/x-icon" href="favicon.ico" /><![endif]-->
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>

@@ -26,7 +26,7 @@
 
     $map = new simpleGMapAPI();
 
-    $map->setWidth(1000);
+    $map->setWidth(700);
     $map->setHeight(500);
     $map->setBackgroundColor('#d0d0d0');
     $map->setMapDraggable(true);
@@ -90,6 +90,10 @@
     <!-- Custom styles for this template -->
     <link href="assets/css/style.css" rel="stylesheet">
     <link href="assets/css/style-responsive.css" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/img/favicon.jpg" />
+    <!--[if IE]><link rel="shortcut icon" type="image/x-icon" href="favicon.ico" /><![endif]-->
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
