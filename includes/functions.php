@@ -9,7 +9,7 @@
         return $result;
     }
 
-    function plotAllFromTo($array, $from, $to)
+    function plotAllFromTo($array, $from = '2014-07-01 00:00:00', $to = '2214-07-01 00:00:00')
     {
         global $db;
         $sql = "SELECT * FROM gpslocations";

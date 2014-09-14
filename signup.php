@@ -77,7 +77,7 @@ if($session->is_loggedin())
                     <br>
                     <input type="password" name="confirm_password" class="form-control" placeholder="Reenter Password" required>
 		            <br>
-                    <button class="btn btn-theme btn-block" href="index.html" type="submit">
+                    <button class="btn btn-theme btn-block" href="index.php" type="submit">
                     <i class="fa fa-lock"></i> SIGN UP</button>
 		            <hr>
 		            <div class="registration">
