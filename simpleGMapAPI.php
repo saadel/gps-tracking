@@ -726,6 +726,12 @@ function showMap($zoomToBounds = true, $autoopen = false)
          "function showmap() {\n".
          "\tvar map = new google.maps.Map(document.getElementById('gmap_canvas'), options);\n\n";
 
+
+
+         include 'morocco.js';
+
+
+
     // infoWindowBehaviour
     if ( ($this->infoWindowBehaviour == 'CLOSE_ON_MAPCLICK') OR ($this->infoWindowBehaviour == 'SINGLE_CLOSE_ON_MAPCLICK') )
     {

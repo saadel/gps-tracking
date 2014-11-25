@@ -9,7 +9,7 @@
         return $result;
     }
 
-    function plotAllFromTo($array, $from = '2014-07-01 00:00:00', $to = '2214-07-01 00:00:00')
+    function plotAllFromTo($array, $from, $to)
     {
         global $db;
         $sql = "SELECT * FROM gpslocations";
@@ -35,7 +35,7 @@
     }
 
     function generateBG($x) {
-        $colors = ["blue","green","red","purple","yellow","white"];
+        $colors = ["blue","green","red","yellow","white","purple"];
         while ($x > 5) {
             $x -= 5;
         }
